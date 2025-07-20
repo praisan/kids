@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แอปฝึกบวกเลข</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .level-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .level-section h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        
+        select, input, button {
+            font-size: 16px;
+            padding: 10px;
+            margin: 5px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        .problem-section {
+            text-align: center;
+            margin: 30px 0;
+            padding: 25px;
+            background-color: #e3f2fd;
+            border-radius: 8px;
+        }
+        
+        .problem {
+            font-size: 36px;
+            font-weight: bold;
+            color: #1976d2;
+            margin: 20px 0;
+        }
+        
+        .answer-input {
+            font-size: 24px;
+            width: 120px;
+            text-align: center;
+            margin: 15px;
+        }
+        
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+        
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+        
+        .score {
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fff3cd;
+            border-radius: 8px;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>แอปฝึกบวกเลข</h1>
+        
+        <div class="level-section">
+            <h3>เลือกระดับความยาก</h3>
+            <select id="difficulty">
+                <option value="easy">ง่าย (1-10)</option>
+                <option value="medium">ปานกลาง (1-50)</option>
+                <option value="hard">ยาก (1-100)</option>
+            </select>
+            <button onclick="startGame()">เริ่มเกม</button>
+        </div>
+        
+        <div class="problem-section" id="gameArea" style="display: none;">
+            <div class="problem" id="problem"></div>
+            <input type="number" id="answerInput" class="answer-input" placeholder="คำตอบ">
+            <div class="controls">
+                <button onclick="checkAnswer()">ตรวจสอบ</button>
+                <button onclick="nextProblem()">โจทย์ถัดไป</button>
+            </div>
+            <div id="result" class="result" style="display: none;"></div>
+        </div>
+        
+        <div class="score" id="scoreDisplay" style="display: none;">
+            <div>คะแนน: <span id="score">0</span></div>
+            <div>จำนวนข้อที่ทำ: <span id="totalQuestions">0</span></div>
+            <div>ความแม่นยำ: <span id="accuracy">0%</span></div>
+        </div>
+    </div>
+
+    <script>
+        class MathTrainer {
+            constructor() {
+                this.currentProblem = {};
+                this.score = 0;
+                this.totalQuestions = 0;
+                this.correctAnswers = 0;
+                this.difficulty = 'easy';
+            }
+
+            startGame() {
+                this.difficulty = document.getElementById('difficulty').value;
+                document.getElementById('gameArea').style.display = 'block';
+                document.getElementById('scoreDisplay').style.display = 'block';
+                this.generateProblem();
+                this.updateScoreDisplay();
+            }
+
+            generateProblem() {
+                let max;
+                switch(this.difficulty) {
+                    case 'easy':
+                        max = 10;
+                        break;
+                    case 'medium':
+                        max = 50;
+                        break;
+                    case 'hard':
+                        max = 100;
+                        break;
+                }
+
+                const num1 = Math.floor(Math.random() * max) + 1;
+                const num2 = Math.floor(Math.random() * max) + 1;
+                
+                this.currentProblem = {
+                    num1: num1,
+                    num2: num2,
+                    answer: num1 + num2
+                };
+
+                document.getElementById('problem').textContent = `${num1} + ${num2} = ?`;
+                document.getElementById('answerInput').value = '';
+                document.getElementById('result').style.display = 'none';
+                document.getElementById('answerInput').focus();
+            }
+
+            checkAnswer() {
+                const userAnswer = parseInt(document.getElementById('answerInput').value);
+                const resultDiv = document.getElementById('result');
+                
+                if (isNaN(userAnswer)) {
+                    resultDiv.textContent = 'กรุณาใส่ตัวเลข';
+                    resultDiv.className = 'result incorrect';
+                    resultDiv.style.display = 'block';
+                    return;
+                }
+
+                this.totalQuestions++;
+                
+                if (userAnswer === this.currentProblem.answer) {
+                    this.score += 10;
+                    this.correctAnswers++;
+                    resultDiv.textContent = 'ถูกต้อง! เก่งมาก';
+                    resultDiv.className = 'result correct';
+                } else {
+                    resultDiv.textContent = `ผิด! คำตอบที่ถูกคือ ${this.currentProblem.answer}`;
+                    resultDiv.className = 'result incorrect';
+                }
+                
+                resultDiv.style.display = 'block';
+                this.updateScoreDisplay();
+            }
+
+            nextProblem() {
+                this.generateProblem();
+            }
+
+            updateScoreDisplay() {
+                document.getElementById('score').textContent = this.score;
+                document.getElementById('totalQuestions').textContent = this.totalQuestions;
+                
+                const accuracy = this.totalQuestions > 0 ? 
+                    Math.round((this.correctAnswers / this.totalQuestions) * 100) : 0;
+                document.getElementById('accuracy').textContent = accuracy + '%';
+            }
+        }
+
+        const mathTrainer = new MathTrainer();
+
+        function startGame() {
+            mathTrainer.startGame();
+        }
+
+        function checkAnswer() {
+            mathTrainer.checkAnswer();
+        }
+
+        function nextProblem() {
+            mathTrainer.nextProblem();
+        }
+
+        // เพิ่มการตรวจสอบเมื่อกด Enter
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('answerInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
