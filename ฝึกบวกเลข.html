@@ -3,420 +3,538 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เกมส์บวกเลข - สำหรับน้องๆ อนุบาล</title>
+    <title>เกมบวกเลขพร้อมจับเวลา - ระดับ 1-20</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Kanit', Arial, sans-serif;
-            background: linear-gradient(135deg, #ff9a9e, #fecfef, #fecfef);
+            font-family: 'Comic Sans MS', cursive;
+            background: linear-gradient(135deg, #FFE5F1 0%, #FFE5B4 100%);
+            margin: 0;
+            padding: 20px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
-
-        .container {
+        
+        .game-container {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             padding: 30px;
-            max-width: 600px;
-            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             text-align: center;
+            max-width: 700px;
+            width: 100%;
         }
-
-        h1 {
-            color: #ff6b6b;
+        
+        .title {
+            color: #FF6B9D;
             font-size: 2.5em;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
-
+        
         .level-selection {
-            margin-bottom: 30px;
-        }
-
-        .level-btn {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            margin: 10px;
-            border-radius: 15px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .level-btn:hover {
-            transform: scale(1.05);
-        }
-
-        .level-btn.active {
-            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
-        }
-
-        .game-area {
-            display: none;
-        }
-
-        .question {
-            font-size: 3em;
-            color: #333;
             margin: 30px 0;
+        }
+        
+        .level-title {
+            font-size: 1.8em;
+            color: #45B7D1;
+            margin-bottom: 20px;
+        }
+        
+        .level-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .level-btn {
+            padding: 15px 10px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
             font-weight: bold;
         }
-
-        .progress {
-            background: #e0e0e0;
-            height: 20px;
-            border-radius: 10px;
+        
+        .level-btn:nth-child(1) { background: #2ECC71; }
+        .level-btn:nth-child(2) { background: #3498DB; }
+        .level-btn:nth-child(3) { background: #F39C12; }
+        .level-btn:nth-child(4) { background: #E74C3C; }
+        .level-btn:nth-child(5) { background: #9B59B6; }
+        
+        .level-btn:hover { transform: scale(1.05); }
+        
+        .game-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
             margin: 20px 0;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            height: 100%;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-
-        .answer-input {
-            font-size: 2em;
             padding: 15px;
-            border: 3px solid #ddd;
+            background: #F8F9FA;
+            border-radius: 10px;
+        }
+        
+        .info-item {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .score { color: #4ECDC4; }
+        .question-counter { color: #FF6B9D; }
+        .current-level { color: #45B7D1; }
+        .timer { color: #E74C3C; }
+        
+        .question {
+            font-size: 3em;
+            color: #45B7D1;
+            margin: 30px 0;
+            padding: 20px;
+            background: #F0F8FF;
             border-radius: 15px;
-            width: 200px;
-            text-align: center;
-            margin: 20px;
+            border: 3px solid #45B7D1;
         }
-
-        .answer-input:focus {
-            border-color: #4ecdc4;
-            outline: none;
+        
+        .question .answer-display {
+            color: #E74C3C;
+            font-weight: bold;
         }
-
-        .submit-btn {
-            background: linear-gradient(45deg, #ffa726, #fb8c00);
-            color: white;
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .option-btn {
+            font-size: 2em;
+            padding: 20px;
             border: none;
-            padding: 15px 30px;
             border-radius: 15px;
-            font-size: 1.5em;
             cursor: pointer;
-            margin: 20px;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            color: white;
+            font-weight: bold;
         }
-
-        .submit-btn:hover {
+        
+        .option-btn:nth-child(1) { background: #FF6B9D; }
+        .option-btn:nth-child(2) { background: #4ECDC4; }
+        .option-btn:nth-child(3) { background: #45B7D1; }
+        .option-btn:nth-child(4) { background: #96CEB4; }
+        
+        .option-btn:hover {
             transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-
+        
         .feedback {
             font-size: 1.5em;
+            margin: 15px 0;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .correct { color: #27AE60; }
+        .incorrect { color: #E74C3C; }
+        
+        .round-complete {
+            background: #E8F5E8;
+            padding: 30px;
+            border-radius: 15px;
             margin: 20px 0;
-            padding: 15px;
+            border: 3px solid #27AE60;
+        }
+        
+        .round-complete h2 {
+            color: #27AE60;
+            font-size: 2.5em;
+            margin: 0 0 20px 0;
+        }
+        
+        .results-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .result-card {
+            background: white;
+            padding: 20px;
             border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
-
-        .correct {
-            background: #d4edda;
-            color: #155724;
-            border: 2px solid #c3e6cb;
+        
+        .result-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
         }
-
-        .incorrect {
-            background: #f8d7da;
-            color: #721c24;
-            border: 2px solid #f5c6cb;
-        }
-
-        .results {
-            display: none;
-            margin-top: 30px;
-        }
-
-        .score {
-            font-size: 2em;
-            color: #4ecdc4;
+        
+        .score-stars { color: #4ECDC4; }
+        .time-stars { color: #F39C12; }
+        
+        .answers-review {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
             margin: 20px 0;
+            text-align: left;
         }
-
-        .history {
-            display: none;
-            margin-top: 30px;
+        
+        .review-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+            align-items: center;
         }
-
-        .history-item {
+        
+        .review-header {
+            font-weight: bold;
             background: #f8f9fa;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 10px;
-            border-left: 5px solid #4ecdc4;
+            padding: 10px 0;
         }
-
-        .nav-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+        
+        .correct-answer { color: #27AE60; }
+        .wrong-answer { color: #E74C3C; }
+        
+        .restart-btn {
+            font-size: 1.3em;
+            padding: 15px 25px;
+            background: #F39C12;
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
-            font-size: 1.1em;
+            border-radius: 25px;
             cursor: pointer;
             margin: 10px;
-            transition: transform 0.2s;
+            transition: background 0.3s ease;
         }
-
-        .nav-btn:hover {
-            transform: scale(1.05);
+        
+        .restart-btn:hover { background: #E67E22; }
+        
+        .level-description {
+            font-size: 1.1em;
+            color: #7F8C8D;
+            margin: 10px 0;
+            padding: 10px;
+            background: #ECEFF1;
+            border-radius: 8px;
         }
-
-        .emoji {
-            font-size: 2em;
-            margin: 0 10px;
+        
+        .hidden { display: none; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ECC71, #27AE60);
+            width: 0%;
+            transition: width 0.3s ease;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🧮 เกมส์บวกเลข 🌟</h1>
+    <div class="game-container">
+        <h1 class="title">🎯 เกมบวกเลข 1-20 🎯</h1>
         
-        <!-- หน้าเลือกระดับ -->
-        <div id="level-screen">
-            <div class="level-selection">
-                <h2>เลือกระดับความยาก</h2>
-                <button class="level-btn" data-level="1">ง่าย (1-10)</button>
-                <button class="level-btn" data-level="2">ปานกลาง (1-20)</button>
-                <button class="level-btn" data-level="3">ยาก (1-50)</button>
+        <div id="levelSelection" class="level-selection">
+            <div class="level-title">เลือกระดับความยาก</div>
+            <div class="level-buttons">
+                <button class="level-btn" onclick="startGame(1)">ระดับ 1<br>1-5</button>
+                <button class="level-btn" onclick="startGame(2)">ระดับ 2<br>1-8</button>
+                <button class="level-btn" onclick="startGame(3)">ระดับ 3<br>1-12</button>
+                <button class="level-btn" onclick="startGame(4)">ระดับ 4<br>1-16</button>
+                <button class="level-btn" onclick="startGame(5)">ระดับ 5<br>1-20</button>
             </div>
-            <button class="nav-btn" onclick="showHistory()">📊 ดูผลย้อนหลัง</button>
-        </div>
-
-        <!-- หน้าเกม -->
-        <div id="game-screen" class="game-area">
-            <div class="progress">
-                <div class="progress-bar" id="progress"></div>
+            <div id="levelDescription" class="level-description">
+                เลือกระดับ
             </div>
-            <div>ข้อที่ <span id="current-question">1</span> / 10</div>
-            
-            <div class="question" id="question"></div>
-            
-            <input type="number" class="answer-input" id="answer" placeholder="ใส่คำตอบ">
-            <br>
-            <button class="submit-btn" onclick="checkAnswer()">ตรวจคำตอบ</button>
-            
-            <div id="feedback" class="feedback" style="display: none;"></div>
         </div>
-
-        <!-- หน้าผลลัพธ์ -->
-        <div id="results-screen" class="results">
-            <h2>🎉 เสร็จแล้ว! 🎉</h2>
-            <div class="score" id="final-score"></div>
-            <button class="nav-btn" onclick="restartGame()">🔄 เล่นใหม่</button>
-            <button class="nav-btn" onclick="backToLevelSelection()">🏠 กลับหน้าหลัก</button>
+        
+        <div id="gameArea" class="hidden">
+            <div class="game-info">
+                <div class="score">คะแนน: <span id="score">0</span></div>
+                <div class="question-counter">ข้อที่: <span id="questionNumber">1</span>/10</div>
+                <div class="current-level">ระดับ: <span id="currentLevel">1</span></div>
+                <div class="timer">เวลา: <span id="timer">00:00</span></div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <div class="question" id="question">1 + 1 = ?</div>
+            
+            <div class="options" id="options">
+                <button class="option-btn" onclick="checkAnswer(this, 0)">0</button>
+                <button class="option-btn" onclick="checkAnswer(this, 1)">1</button>
+                <button class="option-btn" onclick="checkAnswer(this, 2)">2</button>
+                <button class="option-btn" onclick="checkAnswer(this, 3)">3</button>
+            </div>
+            
+            <div class="feedback" id="feedback"></div>
         </div>
-
-        <!-- หน้าประวัติ -->
-        <div id="history-screen" class="history">
-            <h2>📊 ผลการเล่นย้อนหลัง</h2>
-            <div id="history-list"></div>
-            <button class="nav-btn" onclick="backToLevelSelection()">🏠 กลับหน้าหลัก</button>
-            <button class="nav-btn" onclick="clearHistory()">🗑️ ลบประวัติ</button>
+        
+        <div id="roundComplete" class="hidden">
+            <div class="round-complete">
+                <h2>🎉 จบรอบแล้ว! 🎉</h2>
+                
+                <div class="results-summary">
+                    <div class="result-card">
+                        <div class="result-title score-stars">🏆 คะแนน</div>
+                        <div style="font-size: 2em; margin: 10px 0;" id="finalScore">0/100</div>
+                        <div id="scoreStars" class="score-stars"></div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-title time-stars">⏱️ เวลา</div>
+                        <div style="font-size: 2em; margin: 10px 0;" id="finalTime">00:00</div>
+                        <div id="timeStars" class="time-stars"></div>
+                    </div>
+                </div>
+                
+                <div class="answers-review">
+                    <h3>🔍 เฉลยข้อสอบ</h3>
+                    <div class="review-item review-header">
+                        <div>โจทย์</div>
+                        <div>เฉลย</div>
+                        <div>คำตอบของคุณ</div>
+                        <div>ผล</div>
+                    </div>
+                    <div id="reviewContent"></div>
+                </div>
+                
+                <button class="restart-btn" onclick="showLevelSelection()">เลือกระดับใหม่</button>
+                <button class="restart-btn" onclick="restartSameLevel()">เล่นระดับเดิม</button>
+            </div>
         </div>
     </div>
 
     <script>
-        let currentLevel = 1;
-        let questions = [];
-        let currentQuestionIndex = 0;
         let score = 0;
-        let gameHistory = JSON.parse(localStorage.getItem('mathGameHistory')) || [];
-
-        // เลือกระดับความยาก
-        document.querySelectorAll('.level-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                currentLevel = parseInt(this.dataset.level);
-                setTimeout(() => startGame(), 500);
-            });
+        let currentAnswer = 0;
+        let questionCount = 0;
+        let currentLevel = 1;
+        let correctAnswers = 0;
+        let startTime = 0;
+        let endTime = 0;
+        let gameTimer = null;
+        let questionsData = [];
+        let originalQuestionText = '';
+        
+        const levelSettings = {
+            1: { range: [1, 5], description: "บวกเลข 1-5 เหมาะสำหรับผู้เริ่มต้น" },
+            2: { range: [1, 8], description: "บวกเลข 1-8 สำหรับระดับพื้นฐาน" },
+            3: { range: [1, 12], description: "บวกเลข 1-12 สำหรับระดับกลาง" },
+            4: { range: [1, 16], description: "บวกเลข 1-16 สำหรับระดับสูง" },
+            5: { range: [1, 20], description: "บวกเลข 1-20 สำหรับผู้เชี่ยวชาญ" }
+        };
+        
+        function showLevelDescription(level) {
+            document.getElementById('levelDescription').textContent = levelSettings[level].description;
+        }
+        
+        document.querySelectorAll('.level-btn').forEach((btn, index) => {
+            btn.addEventListener('mouseenter', () => showLevelDescription(index + 1));
         });
-
-        // เริ่มเกม
-        function startGame() {
-            document.getElementById('level-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'block';
-            document.getElementById('results-screen').style.display = 'none';
-            document.getElementById('history-screen').style.display = 'none';
-            
-            generateQuestions();
-            currentQuestionIndex = 0;
+        
+        function startGame(level) {
+            currentLevel = level;
             score = 0;
-            showQuestion();
+            questionCount = 0;
+            correctAnswers = 0;
+            questionsData = [];
+            
+            document.getElementById('levelSelection').classList.add('hidden');
+            document.getElementById('gameArea').classList.remove('hidden');
+            document.getElementById('roundComplete').classList.add('hidden');
+            document.getElementById('currentLevel').textContent = level;
+            
+            startTime = Date.now();
+            gameTimer = setInterval(updateTimer, 1000);
+            
+            generateQuestion();
         }
-
-        // สร้างโจทย์
-        function generateQuestions() {
-            questions = [];
-            let maxNum;
-            
-            switch(currentLevel) {
-                case 1: maxNum = 10; break;
-                case 2: maxNum = 20; break;
-                case 3: maxNum = 50; break;
-            }
-            
-            for(let i = 0; i < 10; i++) {
-                let num1 = Math.floor(Math.random() * maxNum) + 1;
-                let num2 = Math.floor(Math.random() * maxNum) + 1;
-                questions.push({
-                    num1: num1,
-                    num2: num2,
-                    answer: num1 + num2
-                });
-            }
+        
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
         }
-
-        // แสดงโจทย์
-        function showQuestion() {
-            if(currentQuestionIndex >= 10) {
-                showResults();
-                return;
+        
+        function generateQuestion() {
+            const settings = levelSettings[currentLevel];
+            const num1 = Math.floor(Math.random() * settings.range[1]) + settings.range[0];
+            const num2 = Math.floor(Math.random() * settings.range[1]) + settings.range[0];
+            currentAnswer = num1 + num2;
+            
+            originalQuestionText = `${num1} + ${num2}`;
+            document.getElementById('question').innerHTML = `${originalQuestionText} = ?`;
+            document.getElementById('questionNumber').textContent = questionCount + 1;
+            
+            const progress = ((questionCount + 1) / 10) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            
+            const options = [currentAnswer];
+            const maxRange = Math.min(settings.range[1] * 2 + 5, 40);
+            
+            while (options.length < 4) {
+                let wrongAnswer;
+                if (Math.random() < 0.3) {
+                    wrongAnswer = currentAnswer + (Math.random() < 0.5 ? 1 : -1);
+                } else {
+                    wrongAnswer = Math.floor(Math.random() * maxRange) + 1;
+                }
+                
+                if (!options.includes(wrongAnswer) && wrongAnswer > 0) {
+                    options.push(wrongAnswer);
+                }
             }
             
-            const question = questions[currentQuestionIndex];
-            document.getElementById('question').textContent = `${question.num1} + ${question.num2} = ?`;
-            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
-            document.getElementById('answer').value = '';
-            document.getElementById('feedback').style.display = 'none';
-            
-            // อัพเดทแถบความคืบหน้า
-            const progress = ((currentQuestionIndex) / 10) * 100;
-            document.getElementById('progress').style.width = progress + '%';
-            
-            document.getElementById('answer').focus();
-        }
-
-        // ตรวจคำตอบ
-        function checkAnswer() {
-            const userAnswer = parseInt(document.getElementById('answer').value);
-            const correctAnswer = questions[currentQuestionIndex].answer;
-            const feedbackDiv = document.getElementById('feedback');
-            
-            if(isNaN(userAnswer)) {
-                alert('กรุณาใส่ตัวเลข');
-                return;
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
             }
             
-            feedbackDiv.style.display = 'block';
-            
-            if(userAnswer === correctAnswer) {
-                score++;
-                feedbackDiv.className = 'feedback correct';
-                feedbackDiv.innerHTML = '🎉 ถูกต้อง! เก่งมาก!';
-                setTimeout(() => {
-                    currentQuestionIndex++;
-                    showQuestion();
-                }, 1500);
-            } else {
-                feedbackDiv.className = 'feedback incorrect';
-                feedbackDiv.innerHTML = `❌ ผิดแล้วจ้า คำตอบที่ถูกคือ ${correctAnswer}`;
-                setTimeout(() => {
-                    currentQuestionIndex++;
-                    showQuestion();
-                }, 2500);
-            }
-        }
-
-        // กด Enter เพื่อตรวจคำตอบ
-        document.getElementById('answer').addEventListener('keypress', function(e) {
-            if(e.key === 'Enter') {
-                checkAnswer();
-            }
-        });
-
-        // แสดงผลลัพธ์
-        function showResults() {
-            document.getElementById('game-screen').style.display = 'none';
-            document.getElementById('results-screen').style.display = 'block';
-            
-            const percentage = (score / 10) * 100;
-            let message = '';
-            
-            if(percentage >= 90) message = '🌟 ยอดเยี่ยม!';
-            else if(percentage >= 70) message = '👏 เก่งมาก!';
-            else if(percentage >= 50) message = '😊 ดีแล้ว!';
-            else message = '💪 ลองใหม่นะ!';
-            
-            document.getElementById('final-score').innerHTML = 
-                `${message}<br>คะแนน: ${score}/10 (${percentage}%)`;
-            
-            // บันทึกประวัติ
-            const levelNames = ['', 'ง่าย', 'ปานกลาง', 'ยาก'];
-            gameHistory.unshift({
-                date: new Date().toLocaleDateString('th-TH'),
-                time: new Date().toLocaleTimeString('th-TH'),
-                level: levelNames[currentLevel],
-                score: score,
-                total: 10,
-                percentage: percentage
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach((btn, index) => {
+                btn.textContent = options[index];
+                btn.disabled = false;
+                btn.style.background = '';
+                btn.onclick = () => checkAnswer(btn, options[index]);
             });
             
-            // เก็บเฉพาะ 20 รายการล่าสุด
-            if(gameHistory.length > 20) {
-                gameHistory = gameHistory.slice(0, 20);
+            buttons[0].style.background = '#FF6B9D';
+            buttons[1].style.background = '#4ECDC4';
+            buttons[2].style.background = '#45B7D1';
+            buttons[3].style.background = '#96CEB4';
+            
+            document.getElementById('feedback').innerHTML = '';
+        }
+        
+        function checkAnswer(button, selectedAnswer) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            // Display selected answer in the question
+            document.getElementById('question').innerHTML = `${originalQuestionText} = <span class="answer-display">${selectedAnswer}</span>`;
+            
+            const feedback = document.getElementById('feedback');
+            
+            let isCorrect = selectedAnswer === currentAnswer;
+            
+            questionsData.push({
+                question: originalQuestionText,
+                userAnswer: selectedAnswer,
+                correctAnswer: currentAnswer,
+                isCorrect: isCorrect
+            });
+            
+            if (isCorrect) {
+                score += 10;
+                correctAnswers++;
+                document.getElementById('score').textContent = score;
+                feedback.innerHTML = '✅ ถูกต้อง!';
+                feedback.className = 'feedback correct';
+                button.style.background = '#27AE60';
+            } else {
+                feedback.innerHTML = '❌ ผิด!';
+                feedback.className = 'feedback incorrect';
+                button.style.background = '#E74C3C';
             }
             
-            localStorage.setItem('mathGameHistory', JSON.stringify(gameHistory));
-        }
-
-        // เริ่มเกมใหม่
-        function restartGame() {
-            startGame();
-        }
-
-        // กลับไปหน้าเลือกระดับ
-        function backToLevelSelection() {
-            document.getElementById('level-screen').style.display = 'block';
-            document.getElementById('game-screen').style.display = 'none';
-            document.getElementById('results-screen').style.display = 'none';
-            document.getElementById('history-screen').style.display = 'none';
-        }
-
-        // แสดงประวัติ
-        function showHistory() {
-            document.getElementById('level-screen').style.display = 'none';
-            document.getElementById('history-screen').style.display = 'block';
+            questionCount++;
             
-            const historyList = document.getElementById('history-list');
-            
-            if(gameHistory.length === 0) {
-                historyList.innerHTML = '<p>ยังไม่มีประวัติการเล่น</p>';
-                return;
-            }
-            
-            historyList.innerHTML = gameHistory.map((game, index) => 
-                `<div class="history-item">
-                    <strong>ครั้งที่ ${index + 1}</strong> - ${game.date} ${game.time}<br>
-                    ระดับ: ${game.level} | คะแนน: ${game.score}/${game.total} (${game.percentage}%)
-                </div>`
-            ).join('');
+            setTimeout(() => {
+                if (questionCount >= 10) {
+                    showRoundComplete();
+                } else {
+                    generateQuestion();
+                }
+            }, 1500);
         }
-
-        // ลบประวัติ
-        function clearHistory() {
-            if(confirm('ต้องการลบประวัติทั้งหมดใช่หรือไม่?')) {
-                gameHistory = [];
-                localStorage.removeItem('mathGameHistory');
-                showHistory();
-            }
+        
+        function showRoundComplete() {
+            clearInterval(gameTimer);
+            endTime = Date.now();
+            
+            document.getElementById('gameArea').classList.add('hidden');
+            document.getElementById('roundComplete').classList.remove('hidden');
+            
+            const totalTime = Math.floor((endTime - startTime) / 1000);
+            const minutes = Math.floor(totalTime / 60).toString().padStart(2, '0');
+            const seconds = (totalTime % 60).toString().padStart(2, '0');
+            
+            document.getElementById('finalScore').textContent = `${score}/100`;
+            document.getElementById('finalTime').textContent = `${minutes}:${seconds}`;
+            
+            calculateStars();
+            displayReview();
+        }
+        
+        function calculateStars() {
+            const percentage = (correctAnswers / 10) * 100;
+            const totalTime = Math.floor((endTime - startTime) / 1000);
+            
+            let scoreStars = '';
+            if (percentage >= 90) scoreStars = '⭐⭐⭐⭐⭐';
+            else if (percentage >= 80) scoreStars = '⭐⭐⭐⭐';
+            else if (percentage >= 70) scoreStars = '⭐⭐⭐';
+            else if (percentage >= 60) scoreStars = '⭐⭐';
+            else scoreStars = '⭐';
+            
+            let timeStars = '';
+            const timeLimit = currentLevel * 60;
+            if (totalTime <= timeLimit * 0.5) timeStars = '⭐⭐⭐⭐⭐';
+            else if (totalTime <= timeLimit * 0.7) timeStars = '⭐⭐⭐⭐';
+            else if (totalTime <= timeLimit * 0.85) timeStars = '⭐⭐⭐';
+            else if (totalTime <= timeLimit) timeStars = '⭐⭐';
+            else timeStars = '⭐';
+            
+            document.getElementById('scoreStars').textContent = scoreStars;
+            document.getElementById('timeStars').textContent = timeStars;
+        }
+        
+        function displayReview() {
+            const reviewContent = document.getElementById('reviewContent');
+            reviewContent.innerHTML = '';
+            
+            questionsData.forEach((data, index) => {
+                const reviewItem = document.createElement('div');
+                reviewItem.className = 'review-item';
+                reviewItem.innerHTML = `
+                    <div>${data.question}</div>
+                    <div class="correct-answer">${data.correctAnswer}</div>
+                    <div class="${data.isCorrect ? 'correct-answer' : 'wrong-answer'}">${data.userAnswer}</div>
+                    <div>${data.isCorrect ? '✅' : '❌'}</div>
+                `;
+                reviewContent.appendChild(reviewItem);
+            });
+        }
+        
+        function showLevelSelection() {
+            document.getElementById('roundComplete').classList.add('hidden');
+            document.getElementById('levelSelection').classList.remove('hidden');
+        }
+        
+        function restartSameLevel() {
+            startGame(currentLevel);
         }
     </script>
 </body>
