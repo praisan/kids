@@ -3,259 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แอปฝึกบวกเลข</title>
+    <title>เกมส์บวกเลข - สำหรับน้องๆ อนุบาล</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
+            font-family: 'Kanit', Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef, #fecfef);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
-            background-color: #f5f5f5;
         }
-        
+
         .container {
-            background-color: white;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        h1 {
+            max-width: 600px;
+            width: 100%;
             text-align: center;
-            color: #333;
+        }
+
+        h1 {
+            color: #ff6b6b;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .level-selection {
             margin-bottom: 30px;
         }
-        
-        .level-section {
-            margin-bottom: 25px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .level-section h3 {
-            margin-top: 0;
-            color: #555;
-        }
-        
-        select, input, button {
-            font-size: 16px;
-            padding: 10px;
-            margin: 5px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-        }
-        
-        button {
-            background-color: #007bff;
+
+        .level-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
             color: white;
             border: none;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 15px;
+            font-size: 1.2em;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: transform 0.2s;
         }
-        
-        button:hover {
-            background-color: #0056b3;
+
+        .level-btn:hover {
+            transform: scale(1.05);
         }
-        
-        .problem-section {
-            text-align: center;
+
+        .level-btn.active {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f);
+        }
+
+        .game-area {
+            display: none;
+        }
+
+        .question {
+            font-size: 3em;
+            color: #333;
             margin: 30px 0;
-            padding: 25px;
-            background-color: #e3f2fd;
-            border-radius: 8px;
-        }
-        
-        .problem {
-            font-size: 36px;
             font-weight: bold;
-            color: #1976d2;
+        }
+
+        .progress {
+            background: #e0e0e0;
+            height: 20px;
+            border-radius: 10px;
             margin: 20px 0;
+            overflow: hidden;
         }
-        
+
+        .progress-bar {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
         .answer-input {
-            font-size: 24px;
-            width: 120px;
+            font-size: 2em;
+            padding: 15px;
+            border: 3px solid #ddd;
+            border-radius: 15px;
+            width: 200px;
             text-align: center;
-            margin: 15px;
+            margin: 20px;
         }
-        
-        .result {
+
+        .answer-input:focus {
+            border-color: #4ecdc4;
+            outline: none;
+        }
+
+        .submit-btn {
+            background: linear-gradient(45deg, #ffa726, #fb8c00);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 1.5em;
+            cursor: pointer;
+            margin: 20px;
+            transition: transform 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .feedback {
+            font-size: 1.5em;
             margin: 20px 0;
             padding: 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 18px;
+            border-radius: 10px;
         }
-        
+
         .correct {
-            background-color: #d4edda;
+            background: #d4edda;
             color: #155724;
             border: 2px solid #c3e6cb;
         }
-        
+
         .incorrect {
-            background-color: #f8d7da;
+            background: #f8d7da;
             color: #721c24;
             border: 2px solid #f5c6cb;
         }
-        
-        .score {
-            text-align: center;
-            font-size: 18px;
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #fff3cd;
-            border-radius: 8px;
+
+        .results {
+            display: none;
+            margin-top: 30px;
         }
-        
-        .controls {
-            text-align: center;
+
+        .score {
+            font-size: 2em;
+            color: #4ecdc4;
             margin: 20px 0;
+        }
+
+        .history {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .history-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border-left: 5px solid #4ecdc4;
+        }
+
+        .nav-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .emoji {
+            font-size: 2em;
+            margin: 0 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>แอปฝึกบวกเลข</h1>
+        <h1>🧮 เกมส์บวกเลข 🌟</h1>
         
-        <div class="level-section">
-            <h3>เลือกระดับความยาก</h3>
-            <select id="difficulty">
-                <option value="easy">ง่าย (1-10)</option>
-                <option value="medium">ปานกลาง (1-50)</option>
-                <option value="hard">ยาก (1-100)</option>
-            </select>
-            <button onclick="startGame()">เริ่มเกม</button>
-        </div>
-        
-        <div class="problem-section" id="gameArea" style="display: none;">
-            <div class="problem" id="problem"></div>
-            <input type="number" id="answerInput" class="answer-input" placeholder="คำตอบ">
-            <div class="controls">
-                <button onclick="checkAnswer()">ตรวจสอบ</button>
-                <button onclick="nextProblem()">โจทย์ถัดไป</button>
+        <!-- หน้าเลือกระดับ -->
+        <div id="level-screen">
+            <div class="level-selection">
+                <h2>เลือกระดับความยาก</h2>
+                <button class="level-btn" data-level="1">ง่าย (1-10)</button>
+                <button class="level-btn" data-level="2">ปานกลาง (1-20)</button>
+                <button class="level-btn" data-level="3">ยาก (1-50)</button>
             </div>
-            <div id="result" class="result" style="display: none;"></div>
+            <button class="nav-btn" onclick="showHistory()">📊 ดูผลย้อนหลัง</button>
         </div>
-        
-        <div class="score" id="scoreDisplay" style="display: none;">
-            <div>คะแนน: <span id="score">0</span></div>
-            <div>จำนวนข้อที่ทำ: <span id="totalQuestions">0</span></div>
-            <div>ความแม่นยำ: <span id="accuracy">0%</span></div>
+
+        <!-- หน้าเกม -->
+        <div id="game-screen" class="game-area">
+            <div class="progress">
+                <div class="progress-bar" id="progress"></div>
+            </div>
+            <div>ข้อที่ <span id="current-question">1</span> / 10</div>
+            
+            <div class="question" id="question"></div>
+            
+            <input type="number" class="answer-input" id="answer" placeholder="ใส่คำตอบ">
+            <br>
+            <button class="submit-btn" onclick="checkAnswer()">ตรวจคำตอบ</button>
+            
+            <div id="feedback" class="feedback" style="display: none;"></div>
+        </div>
+
+        <!-- หน้าผลลัพธ์ -->
+        <div id="results-screen" class="results">
+            <h2>🎉 เสร็จแล้ว! 🎉</h2>
+            <div class="score" id="final-score"></div>
+            <button class="nav-btn" onclick="restartGame()">🔄 เล่นใหม่</button>
+            <button class="nav-btn" onclick="backToLevelSelection()">🏠 กลับหน้าหลัก</button>
+        </div>
+
+        <!-- หน้าประวัติ -->
+        <div id="history-screen" class="history">
+            <h2>📊 ผลการเล่นย้อนหลัง</h2>
+            <div id="history-list"></div>
+            <button class="nav-btn" onclick="backToLevelSelection()">🏠 กลับหน้าหลัก</button>
+            <button class="nav-btn" onclick="clearHistory()">🗑️ ลบประวัติ</button>
         </div>
     </div>
 
     <script>
-        class MathTrainer {
-            constructor() {
-                this.currentProblem = {};
-                this.score = 0;
-                this.totalQuestions = 0;
-                this.correctAnswers = 0;
-                this.difficulty = 'easy';
+        let currentLevel = 1;
+        let questions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let gameHistory = JSON.parse(localStorage.getItem('mathGameHistory')) || [];
+
+        // เลือกระดับความยาก
+        document.querySelectorAll('.level-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentLevel = parseInt(this.dataset.level);
+                setTimeout(() => startGame(), 500);
+            });
+        });
+
+        // เริ่มเกม
+        function startGame() {
+            document.getElementById('level-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'block';
+            document.getElementById('results-screen').style.display = 'none';
+            document.getElementById('history-screen').style.display = 'none';
+            
+            generateQuestions();
+            currentQuestionIndex = 0;
+            score = 0;
+            showQuestion();
+        }
+
+        // สร้างโจทย์
+        function generateQuestions() {
+            questions = [];
+            let maxNum;
+            
+            switch(currentLevel) {
+                case 1: maxNum = 10; break;
+                case 2: maxNum = 20; break;
+                case 3: maxNum = 50; break;
             }
-
-            startGame() {
-                this.difficulty = document.getElementById('difficulty').value;
-                document.getElementById('gameArea').style.display = 'block';
-                document.getElementById('scoreDisplay').style.display = 'block';
-                this.generateProblem();
-                this.updateScoreDisplay();
-            }
-
-            generateProblem() {
-                let max;
-                switch(this.difficulty) {
-                    case 'easy':
-                        max = 10;
-                        break;
-                    case 'medium':
-                        max = 50;
-                        break;
-                    case 'hard':
-                        max = 100;
-                        break;
-                }
-
-                const num1 = Math.floor(Math.random() * max) + 1;
-                const num2 = Math.floor(Math.random() * max) + 1;
-                
-                this.currentProblem = {
+            
+            for(let i = 0; i < 10; i++) {
+                let num1 = Math.floor(Math.random() * maxNum) + 1;
+                let num2 = Math.floor(Math.random() * maxNum) + 1;
+                questions.push({
                     num1: num1,
                     num2: num2,
                     answer: num1 + num2
-                };
-
-                document.getElementById('problem').textContent = `${num1} + ${num2} = ?`;
-                document.getElementById('answerInput').value = '';
-                document.getElementById('result').style.display = 'none';
-                document.getElementById('answerInput').focus();
-            }
-
-            checkAnswer() {
-                const userAnswer = parseInt(document.getElementById('answerInput').value);
-                const resultDiv = document.getElementById('result');
-                
-                if (isNaN(userAnswer)) {
-                    resultDiv.textContent = 'กรุณาใส่ตัวเลข';
-                    resultDiv.className = 'result incorrect';
-                    resultDiv.style.display = 'block';
-                    return;
-                }
-
-                this.totalQuestions++;
-                
-                if (userAnswer === this.currentProblem.answer) {
-                    this.score += 10;
-                    this.correctAnswers++;
-                    resultDiv.textContent = 'ถูกต้อง! เก่งมาก';
-                    resultDiv.className = 'result correct';
-                } else {
-                    resultDiv.textContent = `ผิด! คำตอบที่ถูกคือ ${this.currentProblem.answer}`;
-                    resultDiv.className = 'result incorrect';
-                }
-                
-                resultDiv.style.display = 'block';
-                this.updateScoreDisplay();
-            }
-
-            nextProblem() {
-                this.generateProblem();
-            }
-
-            updateScoreDisplay() {
-                document.getElementById('score').textContent = this.score;
-                document.getElementById('totalQuestions').textContent = this.totalQuestions;
-                
-                const accuracy = this.totalQuestions > 0 ? 
-                    Math.round((this.correctAnswers / this.totalQuestions) * 100) : 0;
-                document.getElementById('accuracy').textContent = accuracy + '%';
+                });
             }
         }
 
-        const mathTrainer = new MathTrainer();
-
-        function startGame() {
-            mathTrainer.startGame();
+        // แสดงโจทย์
+        function showQuestion() {
+            if(currentQuestionIndex >= 10) {
+                showResults();
+                return;
+            }
+            
+            const question = questions[currentQuestionIndex];
+            document.getElementById('question').textContent = `${question.num1} + ${question.num2} = ?`;
+            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+            document.getElementById('answer').value = '';
+            document.getElementById('feedback').style.display = 'none';
+            
+            // อัพเดทแถบความคืบหน้า
+            const progress = ((currentQuestionIndex) / 10) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            
+            document.getElementById('answer').focus();
         }
 
+        // ตรวจคำตอบ
         function checkAnswer() {
-            mathTrainer.checkAnswer();
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            const feedbackDiv = document.getElementById('feedback');
+            
+            if(isNaN(userAnswer)) {
+                alert('กรุณาใส่ตัวเลข');
+                return;
+            }
+            
+            feedbackDiv.style.display = 'block';
+            
+            if(userAnswer === correctAnswer) {
+                score++;
+                feedbackDiv.className = 'feedback correct';
+                feedbackDiv.innerHTML = '🎉 ถูกต้อง! เก่งมาก!';
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    showQuestion();
+                }, 1500);
+            } else {
+                feedbackDiv.className = 'feedback incorrect';
+                feedbackDiv.innerHTML = `❌ ผิดแล้วจ้า คำตอบที่ถูกคือ ${correctAnswer}`;
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    showQuestion();
+                }, 2500);
+            }
         }
 
-        function nextProblem() {
-            mathTrainer.nextProblem();
-        }
-
-        // เพิ่มการตรวจสอบเมื่อกด Enter
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('answerInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    checkAnswer();
-                }
-            });
+        // กด Enter เพื่อตรวจคำตอบ
+        document.getElementById('answer').addEventListener('keypress', function(e) {
+            if(e.key === 'Enter') {
+                checkAnswer();
+            }
         });
+
+        // แสดงผลลัพธ์
+        function showResults() {
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('results-screen').style.display = 'block';
+            
+            const percentage = (score / 10) * 100;
+            let message = '';
+            
+            if(percentage >= 90) message = '🌟 ยอดเยี่ยม!';
+            else if(percentage >= 70) message = '👏 เก่งมาก!';
+            else if(percentage >= 50) message = '😊 ดีแล้ว!';
+            else message = '💪 ลองใหม่นะ!';
+            
+            document.getElementById('final-score').innerHTML = 
+                `${message}<br>คะแนน: ${score}/10 (${percentage}%)`;
+            
+            // บันทึกประวัติ
+            const levelNames = ['', 'ง่าย', 'ปานกลาง', 'ยาก'];
+            gameHistory.unshift({
+                date: new Date().toLocaleDateString('th-TH'),
+                time: new Date().toLocaleTimeString('th-TH'),
+                level: levelNames[currentLevel],
+                score: score,
+                total: 10,
+                percentage: percentage
+            });
+            
+            // เก็บเฉพาะ 20 รายการล่าสุด
+            if(gameHistory.length > 20) {
+                gameHistory = gameHistory.slice(0, 20);
+            }
+            
+            localStorage.setItem('mathGameHistory', JSON.stringify(gameHistory));
+        }
+
+        // เริ่มเกมใหม่
+        function restartGame() {
+            startGame();
+        }
+
+        // กลับไปหน้าเลือกระดับ
+        function backToLevelSelection() {
+            document.getElementById('level-screen').style.display = 'block';
+            document.getElementById('game-screen').style.display = 'none';
+            document.getElementById('results-screen').style.display = 'none';
+            document.getElementById('history-screen').style.display = 'none';
+        }
+
+        // แสดงประวัติ
+        function showHistory() {
+            document.getElementById('level-screen').style.display = 'none';
+            document.getElementById('history-screen').style.display = 'block';
+            
+            const historyList = document.getElementById('history-list');
+            
+            if(gameHistory.length === 0) {
+                historyList.innerHTML = '<p>ยังไม่มีประวัติการเล่น</p>';
+                return;
+            }
+            
+            historyList.innerHTML = gameHistory.map((game, index) => 
+                `<div class="history-item">
+                    <strong>ครั้งที่ ${index + 1}</strong> - ${game.date} ${game.time}<br>
+                    ระดับ: ${game.level} | คะแนน: ${game.score}/${game.total} (${game.percentage}%)
+                </div>`
+            ).join('');
+        }
+
+        // ลบประวัติ
+        function clearHistory() {
+            if(confirm('ต้องการลบประวัติทั้งหมดใช่หรือไม่?')) {
+                gameHistory = [];
+                localStorage.removeItem('mathGameHistory');
+                showHistory();
+            }
+        }
     </script>
 </body>
 </html>
